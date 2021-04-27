@@ -1,10 +1,10 @@
 {
-  "name": "deltas-healing-initiation-service",
+  "name": "delta-production-background-jobs-initiator",
   "version": "0.1.0",
-  "description": "Microservice responsible for intiating a healing job",
+  "description": "Service responsible for (periodically) triggering a delta-related background jobs.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lblod/deltas-healing-initiation-service.git"
+    "url": "git+https://github.com/lblod/delta-production-background-jobs-initiator.git"
   },
   "author": "redpencil.io",
   "license": "MIT",
