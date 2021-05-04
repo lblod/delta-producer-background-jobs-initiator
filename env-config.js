@@ -32,6 +32,6 @@ export const CRON_PATTERN  = process.env.CRON_PATTERN || '0 0 0 * * *'; // every
 //delta-initial-cache-graph-sync-job
 export const INITIAL_CACHE_SYNC_TASK_OPERATION = 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/initialCacheGraphSyncing';
 
-if(!process.env.INITIAL_CACHE_SYNC_JOB_OPERATION_URI)
-  throw `Expected 'INITIAL_CACHE_SYNC_JOB_OPERATION_URI' to be provided.`;
-export const INITIAL_CACHE_SYNC_JOB_OPERATION_URI = process.env.INITIAL_CACHE_SYNC_JOB_OPERATION_URI;
+if(!process.env.INITIAL_CACHE_SYNC_JOB_OPERATION)
+  throw `Expected 'INITIAL_CACHE_SYNC_JOB_OPERATION' to be provided.`;
+export const INITIAL_CACHE_SYNC_JOB_OPERATION = process.env.INITIAL_CACHE_SYNC_JOB_OPERATION;

@@ -22,7 +22,7 @@ import { PREFIXES,
          JOB_URI_PREFIX,
          JOB_CREATOR_URI,
          ERROR_URI_PREFIX,
-         INITIAL_CACHE_SYNC_JOB_OPERATION_URI,
+         INITIAL_CACHE_SYNC_JOB_OPERATION,
          INITIAL_CACHE_SYNC_TASK_OPERATION,
          CRON_PATTERN
        } from './env-config.js';
@@ -34,13 +34,13 @@ waitForDatabase(scheduleInitialSync);
 
 async function scheduleInitialSync(){
   try {
-    const jobs = await getJobs(INITIAL_CACHE_SYNC_JOB_OPERATION_URI);
+    const jobs = await getJobs(INITIAL_CACHE_SYNC_JOB_OPERATION);
     if(jobs.length){
-      console.info(`Initial sync ${INITIAL_CACHE_SYNC_JOB_OPERATION_URI} exists, see ${jobs.map(j => j.jobUri).join(', ')}`);
+      console.info(`Initial sync ${INITIAL_CACHE_SYNC_JOB_OPERATION} exists, see ${jobs.map(j => j.jobUri).join(', ')}`);
       console.info('skipping');
     }
     else {
-      const jobUri = await createJob(INITIAL_CACHE_SYNC_JOB_OPERATION_URI);
+      const jobUri = await createJob(INITIAL_CACHE_SYNC_JOB_OPERATION);
       await scheduleTask(jobUri, INITIAL_CACHE_SYNC_TASK_OPERATION);
     }
   }
@@ -86,8 +86,15 @@ async function scheduleInitialSync(){
 //   res.send({ msg: 'Healing job cleaned' });
 // });
 
+
+app.post('/initial-sync-jobs', async function (_, res){
+  const jobUri = await createJob(INITIAL_CACHE_SYNC_JOB_OPERATION);
+  await scheduleTask(jobUri, INITIAL_CACHE_SYNC_TASK_OPERATION);
+  res.send({ msg: `Sync jobs started ${jobUri}` });
+});
+
 app.delete('/initial-sync-jobs', async function (_, res){
-  const jobs = await getJobs(INITIAL_CACHE_SYNC_JOB_OPERATION_URI);
+  const jobs = await getJobs(INITIAL_CACHE_SYNC_JOB_OPERATION);
   await cleanupJobs(jobs);
   res.send({ msg: `Sync jobs cleaned ${jobs.map(j => j.jobUri).join(', ')}` });
 });
