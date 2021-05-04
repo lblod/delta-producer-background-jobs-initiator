@@ -27,11 +27,20 @@ export const JOBS_GRAPH = process.env.JOBS_GRAPH || 'http://mu.semte.ch/graphs/s
 
 export const JOB_CREATOR_URI = 'http://lblod.data.gift/services/delta-producer-background-jobs-initiator';
 export const ERROR_URI_PREFIX = 'http://redpencil.data.gift/id/jobs/error/';
-export const CRON_PATTERN  = process.env.CRON_PATTERN || '0 0 0 * * *'; // every day at midnight
+export const CRON_PATTERN_HEALING_JOB  = process.env.CRON_PATTERN_HEALING_JOB || '0 0 0 * * *'; // every day at midnight
+export const CRON_PATTERN_DUMP_JOB  = process.env.CRON_PATTERN_DUMP_JOB || '0 0 0 * * *'; // every day at midnight
 
-//delta-initial-cache-graph-sync-job
+// delta-initial-cache-graph-sync-job
 export const INITIAL_CACHE_SYNC_TASK_OPERATION = 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/initialCacheGraphSyncing';
+
+// delta-dump-file-creation-job
+export const DUMP_FILE_CREATION_TASK_OPERATION = 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/deltaDumpFileCreation';
+
 
 if(!process.env.INITIAL_CACHE_SYNC_JOB_OPERATION)
   throw `Expected 'INITIAL_CACHE_SYNC_JOB_OPERATION' to be provided.`;
 export const INITIAL_CACHE_SYNC_JOB_OPERATION = process.env.INITIAL_CACHE_SYNC_JOB_OPERATION;
+
+if(!process.env.DUMP_FILE_CREATION_JOB_OPERATION)
+  throw `Expected 'DUMP_FILE_CREATION_JOB_OPERATION' to be provided.`;
+export const DUMP_FILE_CREATION_JOB_OPERATION = process.env.DUMP_FILE_CREATION_JOB_OPERATION;
