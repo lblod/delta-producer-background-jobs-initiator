@@ -1,4 +1,4 @@
-# delta-production-background-jobs-initiator
+# delta-producer-background-jobs-initiator
 
 Service responsible for (periodically) triggering a delta-related background jobs.
 
@@ -7,8 +7,8 @@ Service responsible for (periodically) triggering a delta-related background job
 Add the service to your `docker-compose.yml`, minimal config being:
 
 ```
-  delta-production-background-jobs-initiator-some-theme:
-    image: lblod/delta-production-background-jobs-initiator:0.0.1
+  delta-producer-background-jobs-initiator-some-theme:
+    image: lblod/delta-producer-background-jobs-initiator:0.0.1
     environment:
       INITIAL_CACHE_SYNC_JOB_OPERATION_URI: 'http://redpencil.data.gift/id/jobs/concept/JobOperation/deltas/initialCacheGraphSyncing/SomeTheme'
 ```
