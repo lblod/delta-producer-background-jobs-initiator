@@ -36,6 +36,8 @@ export const INITIAL_CACHE_SYNC_TASK_OPERATION = 'http://redpencil.data.gift/id/
 // delta-dump-file-creation-job
 export const DUMP_FILE_CREATION_TASK_OPERATION = 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/deltaDumpFileCreation';
 
+// delta-healing-job
+export const HEALING_TASK_OPERATION = 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/healing/patchCacheGraph';
 
 if(!process.env.INITIAL_CACHE_SYNC_JOB_OPERATION)
   throw `Expected 'INITIAL_CACHE_SYNC_JOB_OPERATION' to be provided.`;
@@ -44,3 +46,7 @@ export const INITIAL_CACHE_SYNC_JOB_OPERATION = process.env.INITIAL_CACHE_SYNC_J
 if(!process.env.DUMP_FILE_CREATION_JOB_OPERATION)
   throw `Expected 'DUMP_FILE_CREATION_JOB_OPERATION' to be provided.`;
 export const DUMP_FILE_CREATION_JOB_OPERATION = process.env.DUMP_FILE_CREATION_JOB_OPERATION;
+
+if(!process.env.HEALING_JOB_OPERATION)
+  throw `Expected 'HEALING_JOB_OPERATION' to be provided.`;
+export const HEALING_JOB_OPERATION = process.env.HEALING_JOB_OPERATION;

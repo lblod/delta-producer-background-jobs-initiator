@@ -26,6 +26,8 @@ import { PREFIXES,
          INITIAL_CACHE_SYNC_TASK_OPERATION,
          DUMP_FILE_CREATION_JOB_OPERATION,
          DUMP_FILE_CREATION_TASK_OPERATION,
+         HEALING_JOB_OPERATION,
+         HEALING_TASK_OPERATION,
          CRON_PATTERN_HEALING_JOB,
          CRON_PATTERN_DUMP_JOB
        } from './env-config.js';
@@ -60,7 +62,7 @@ new CronJob(CRON_PATTERN_DUMP_JOB, async function() {
   const now = new Date().toISOString();
   console.info(`First check triggered by cron job at ${now}`);
   try {
-    const activeJobs = await getJobs(DUMP_FILE_CREATION_JOB_OPERATION);
+    const activeJobs = await getJobs(DUMP_FILE_CREATION_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] );
     if(activeJobs.length){
       console.warn(`WARNING: Same type of jobs already running, see: ${activeJobs.map(j => j.jobUri).join(' ')}`);
     }
@@ -73,38 +75,38 @@ new CronJob(CRON_PATTERN_DUMP_JOB, async function() {
   }
 }, null, true);
 
-/* new CronJob(CRON_PATTERN_HEALING_JOB, async function() {
+new CronJob(CRON_PATTERN_HEALING_JOB, async function() {
   const now = new Date().toISOString();
   console.info(`First check triggered by cron job at ${now}`);
   try {
     // schedule for cronjob flow differs from manual triggering, as we want only one job to run and mark the other one as failed.(more visible to user)
-    const activeJobs = await getActiveHealingJobs();
+    const activeJobs = await await getJobs(HEALING_JOB_OPERATION, [], [ STATUS_BUSY, STATUS_SCHEDULED ]);
     if(activeJobs.length){
       console.warn(`WARNING: Same type of jobs already running, see: ${activeJobs.map(j => j.jobUri).join(' ')}`);
     }
     else {
-      const jobUri = await createHealingJob();
-      await scheduleTask(jobUri);
+      const jobUri = await createJob(HEALING_JOB_OPERATION);
+      await scheduleTask(jobUri, HEALING_TASK_OPERATION);
     }
   } catch (err) {
     console.log(`An error occurred during initiaton at ${now}: ${err}`);
   }
-}, null, true); */
+}, null, true);
 
 /*
  * ENDPOINTS CURRENTLY MEANT FOR DEBUGGING
  */
-// app.post('/jobs', async function (_, res) {
-//   const jobUri = await createHealingJob();
-//   await scheduleFirstTask(jobUri);
-//   res.send({ msg: `Healing job ${jobUri} triggered` });
-// });
+app.post('/healing-jobs', async function (_, res) {
+   const jobUri = await createJob(HEALING_JOB_OPERATION);
+   await scheduleTask(jobUri, HEALING_TASK_OPERATION);
+  res.send({ msg: `Healing job ${jobUri} triggered` });
+});
 
-// app.delete('/jobs', async function (_, res) {
-//   await cleanupActiveJobs();
-//   res.send({ msg: 'Healing job cleaned' });
-// });
-
+app.delete('/healing-jobs', async function (_, res) {
+  const jobs = await getJobs(HEALING_JOB_OPERATION);
+  await cleanupJobs(jobs);
+  res.send({ msg: 'Healing job cleaned' });
+});
 
 app.post('/initial-sync-jobs', async function (_, res){
   const jobUri = await createJob(INITIAL_CACHE_SYNC_JOB_OPERATION);
