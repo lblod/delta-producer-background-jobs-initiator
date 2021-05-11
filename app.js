@@ -54,7 +54,7 @@ async function scheduleInitialSync(){
   }
   catch(error){
     console.error(`Error while scheduling job: ${error}`);
-    await storeError(error);
+    await storeError(error.message);
   }
 }
 
@@ -230,20 +230,20 @@ async function scheduleTask(jobUri, taskOperationUri, taskIndex = "0"){
   return taskUri;
 }
 
-async function storeError(errorMsg){
- const id = uuid();
+async function storeError(errorMsg) {
+  const id = uuid();
   const uri = ERROR_URI_PREFIX + id;
 
   const queryError = `
-   ${PREFIXES}
+    ${PREFIXES}
 
-   INSERT DATA {
-    GRAPH ${sparqlEscapeUri(JOBS_GRAPH)}{
-      ${sparqlEscapeUri(uri)} a ${sparqlEscapeUri(ERROR_TYPE)}, ${sparqlEscapeUri(DELTA_ERROR_TYPE)};
-        mu:uuid ${sparqlEscapeString(id)};
-        oslc:message ${sparqlEscapeString(errorMsg)}.
+    INSERT DATA {
+      GRAPH ${sparqlEscapeUri(JOBS_GRAPH)} {
+        ${sparqlEscapeUri(uri)} a ${sparqlEscapeUri(ERROR_TYPE)}, ${sparqlEscapeUri(DELTA_ERROR_TYPE)} ;
+          mu:uuid ${sparqlEscapeString(id)} ;
+          oslc:message ${sparqlEscapeString(errorMsg)} .
+      }
     }
-   }
   `;
 
   await update(queryError);
