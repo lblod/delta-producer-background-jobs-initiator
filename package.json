@@ -1,6 +1,6 @@
 {
   "name": "delta-producer-background-jobs-initiator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Service responsible for (periodically) triggering a delta-related background jobs.",
   "repository": {
     "type": "git",

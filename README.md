@@ -12,6 +12,7 @@ Add the service to your `docker-compose.yml`, minimal config being:
     environment:
       INITIAL_CACHE_SYNC_JOB_OPERATION: 'http://redpencil.data.gift/id/jobs/concept/JobOperation/deltas/initialCacheGraphSyncing/SomeTheme'
       DUMP_FILE_CREATION_JOB_OPERATION: 'http://redpencil.data.gift/id/jobs/concept/JobOperation/deltas/deltaDumpFileCreation/SomeTheme'
+      HEALING_JOB_OPERATION: 'http://redpencil.data.gift/id/jobs/concept/JobOperation/deltas/healingOperation/SomeTheme'
 ```
 
 ## Reference
