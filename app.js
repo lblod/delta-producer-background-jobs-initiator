@@ -46,15 +46,23 @@ if(START_INITIAL_SYNC){
 
 async function scheduleInitialSync(){
   try {
-    const jobs = await getJobs(INITIAL_CACHE_SYNC_JOB_OPERATION);
-    if(jobs.length){
-      console.info(`Initial sync ${INITIAL_CACHE_SYNC_JOB_OPERATION} exists, see ${jobs.map(j => j.jobUri).join(', ')}`);
-      console.info('skipping');
+
+    let activeJobs = await getJobs(INITIAL_CACHE_SYNC_JOB_OPERATION);
+    activeJobs = [...activeJobs, await getJobs(DUMP_FILE_CREATION_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] ) ];
+    activeJobs = [...activeJobs, await getJobs(HEALING_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] ) ];
+
+    if(activeJobs.length){
+      const message = `Incompatible jobs for
+                       ${INITIAL_CACHE_SYNC_JOB_OPERATION}
+                       already running, see ${activeJobs.map(j => j.jobUri).join(', ')}`;
+      console.error(message);
+      await storeError(message);
     }
     else {
       const jobUri = await createJob(INITIAL_CACHE_SYNC_JOB_OPERATION);
       await scheduleTask(jobUri, INITIAL_CACHE_SYNC_TASK_OPERATION);
     }
+
   }
   catch(error){
     console.error(`Error while scheduling job: ${error}`);
@@ -66,14 +74,23 @@ new CronJob(CRON_PATTERN_DUMP_JOB, async function() {
   const now = new Date().toISOString();
   console.info(`First check triggered by cron job at ${now}`);
   try {
-    const activeJobs = await getJobs(DUMP_FILE_CREATION_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] );
+
+    let activeJobs = await getJobs(DUMP_FILE_CREATION_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] );
+    activeJobs = [...activeJobs, await getJobs(INITIAL_CACHE_SYNC_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] ) ];
+    activeJobs = [...activeJobs, await getJobs(HEALING_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] ) ];
+
     if(activeJobs.length){
-      console.warn(`WARNING: Same type of jobs already running, see: ${activeJobs.map(j => j.jobUri).join(' ')}`);
+      const message = `Incompatible jobs for
+                       ${DUMP_FILE_CREATION_JOB_OPERATION}
+                       already running, see ${activeJobs.map(j => j.jobUri).join(', ')}`;
+      console.error(message);
+      await storeError(message);
     }
     else {
       const jobUri = await createJob(DUMP_FILE_CREATION_JOB_OPERATION);
       await scheduleTask(jobUri, DUMP_FILE_CREATION_TASK_OPERATION);
     }
+
   } catch (err) {
     console.log(`An error occurred during initiaton at ${now}: ${err}`);
   }
@@ -83,15 +100,23 @@ new CronJob(CRON_PATTERN_HEALING_JOB, async function() {
   const now = new Date().toISOString();
   console.info(`First check triggered by cron job at ${now}`);
   try {
-    // schedule for cronjob flow differs from manual triggering, as we want only one job to run and mark the other one as failed.(more visible to user)
-    const activeJobs = await await getJobs(HEALING_JOB_OPERATION, [], [ STATUS_BUSY, STATUS_SCHEDULED ]);
+
+    const activeJobs = await getJobs(HEALING_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ]);
+    activeJobs = [...activeJobs, await getJobs(INITIAL_CACHE_SYNC_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] ) ];
+    activeJobs = [...activeJobs, await getJobs(DUMP_FILE_CREATION_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] ) ];
+
     if(activeJobs.length){
-      console.warn(`WARNING: Same type of jobs already running, see: ${activeJobs.map(j => j.jobUri).join(' ')}`);
+      const message = `Incompatible jobs for
+                       ${HEALING_JOB_OPERATION}
+                       already running, see ${activeJobs.map(j => j.jobUri).join(', ')}`;
+      console.error(message);
+      await storeError(message);
     }
     else {
       const jobUri = await createJob(HEALING_JOB_OPERATION);
       await scheduleTask(jobUri, HEALING_TASK_OPERATION);
     }
+
   } catch (err) {
     console.log(`An error occurred during initiaton at ${now}: ${err}`);
   }
