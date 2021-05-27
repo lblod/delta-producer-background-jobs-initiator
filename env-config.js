@@ -50,3 +50,5 @@ export const DUMP_FILE_CREATION_JOB_OPERATION = process.env.DUMP_FILE_CREATION_J
 if(!process.env.HEALING_JOB_OPERATION)
   throw `Expected 'HEALING_JOB_OPERATION' to be provided.`;
 export const HEALING_JOB_OPERATION = process.env.HEALING_JOB_OPERATION;
+
+export const START_INITIAL_SYNC = process.env.START_INITIAL_SYNC == 'false' ? false : true ;

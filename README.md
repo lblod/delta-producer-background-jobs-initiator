@@ -22,6 +22,7 @@ The following enviroment variables can be configured:
 * `JOBS_GRAPH`: URI of the graph where jobs are stored, defaults to `http://mu.semte.ch/graphs/system/jobs`
 * `CRON_PATTERN_HEALING_JOB`: Pattern for periodical triggering, defaults to `0 0 0 * * *`
 * `CRON_PATTERN_DUMP_JOB`: Pattern for periodical triggering, defaults to `0 0 0 * * *`
+* `START_INITIAL_SYNC`: set to 'false' if no initial sync needed
 
 ### API
 There is an api, mainly meant for debugging. Look at `app.js` if you want to use it.

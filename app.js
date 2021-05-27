@@ -29,7 +29,8 @@ import { PREFIXES,
          HEALING_JOB_OPERATION,
          HEALING_TASK_OPERATION,
          CRON_PATTERN_HEALING_JOB,
-         CRON_PATTERN_DUMP_JOB
+         CRON_PATTERN_DUMP_JOB,
+         START_INITIAL_SYNC
        } from './env-config.js';
 
 import { waitForDatabase } from './database-utils';
@@ -38,7 +39,10 @@ app.get('/', function (_, res) {
   res.send('Hello from delta-producer-background-jobs-initiator :)');
 });
 
-waitForDatabase(scheduleInitialSync);
+console.info(`INFO: START_INITIAL_SYNC set to: ${START_INITIAL_SYNC}`);
+if(START_INITIAL_SYNC){
+  waitForDatabase(scheduleInitialSync);
+}
 
 async function scheduleInitialSync(){
   try {
