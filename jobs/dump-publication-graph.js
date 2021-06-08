@@ -1,6 +1,6 @@
 import { STATUS_BUSY,
          STATUS_SCHEDULED,
-         INITIAL_PUBLICATION_SYNC_JOB_OPERATION,
+         INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION,
          DUMP_FILE_CREATION_JOB_OPERATION,
          DUMP_FILE_CREATION_TASK_OPERATION,
          HEALING_JOB_OPERATION,
@@ -11,7 +11,7 @@ export async function run(){
   console.info(`Starting ${DUMP_FILE_CREATION_JOB_OPERATION} at ${new Date().toISOString()}`);
   try {
     let activeJobs = await getJobs(DUMP_FILE_CREATION_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] );
-    activeJobs = [...activeJobs, ...await getJobs(INITIAL_PUBLICATION_SYNC_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] ) ];
+    activeJobs = [...activeJobs, ...await getJobs(INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] ) ];
     activeJobs = [...activeJobs, ...await getJobs(HEALING_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] ) ];
 
     if(activeJobs.length){

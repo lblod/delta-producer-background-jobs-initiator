@@ -1,7 +1,7 @@
 import { app, errorHandler } from 'mu';
 import { CronJob } from 'cron';
-import { INITIAL_PUBLICATION_SYNC_JOB_OPERATION,
-         INITIAL_PUBLICATION_SYNC_TASK_OPERATION,
+import { INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION,
+         INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION,
          HEALING_JOB_OPERATION,
          HEALING_TASK_OPERATION,
          DUMP_FILE_CREATION_JOB_OPERATION,
@@ -66,13 +66,13 @@ app.delete('/healing-jobs', async function (_, res) {
 });
 
 app.post('/initial-sync-jobs', async function (_, res){
-  const jobUri = await createJob(INITIAL_PUBLICATION_SYNC_JOB_OPERATION);
-  await scheduleTask(jobUri, INITIAL_PUBLICATION_SYNC_TASK_OPERATION);
+  const jobUri = await createJob(INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION);
+  await scheduleTask(jobUri, INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION);
   res.send({ msg: `Sync jobs started ${jobUri}` });
 });
 
 app.delete('/initial-sync-jobs', async function (_, res){
-  const jobs = await getJobs(INITIAL_PUBLICATION_SYNC_JOB_OPERATION);
+  const jobs = await getJobs(INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION);
   await cleanupJobs(jobs);
   res.send({ msg: `Sync jobs cleaned ${jobs.map(j => j.jobUri).join(', ')}` });
 });

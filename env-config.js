@@ -31,7 +31,7 @@ export const CRON_PATTERN_HEALING_JOB  = process.env.CRON_PATTERN_HEALING_JOB ||
 export const CRON_PATTERN_DUMP_JOB = process.env.CRON_PATTERN_DUMP_JOB || '0 0 0 * * *'; // every day at midnight
 
 // delta-initial-publication-graph-sync-job
-export const INITIAL_PUBLICATION_SYNC_TASK_OPERATION = 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/initialPublicationGraphSyncing';
+export const INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION = 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/initialPublicationGraphSyncing';
 
 // delta-dump-file-creation-job
 export const DUMP_FILE_CREATION_TASK_OPERATION = 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/deltaDumpFileCreation';
@@ -39,9 +39,9 @@ export const DUMP_FILE_CREATION_TASK_OPERATION = 'http://redpencil.data.gift/id/
 // delta-healing-job
 export const HEALING_TASK_OPERATION = 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/healing/patchPublicationGraph';
 
-if(!process.env.INITIAL_PUBLICATION_SYNC_JOB_OPERATION)
-  throw `Expected 'INITIAL_PUBLICATION_SYNC_JOB_OPERATION' to be provided.`;
-export const INITIAL_PUBLICATION_SYNC_JOB_OPERATION = process.env.INITIAL_PUBLICATION_SYNC_JOB_OPERATION;
+if(!process.env.INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION)
+  throw `Expected 'INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION' to be provided.`;
+export const INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION = process.env.INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION;
 
 if(!process.env.DUMP_FILE_CREATION_JOB_OPERATION)
   throw `Expected 'DUMP_FILE_CREATION_JOB_OPERATION' to be provided.`;
