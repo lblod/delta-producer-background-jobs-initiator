@@ -24,6 +24,7 @@ The following enviroment variables can be configured:
 * `CRON_PATTERN_HEALING_JOB`: Pattern for periodical triggering, defaults to `0 0 0 * * *`
 * `CRON_PATTERN_DUMP_JOB`: Pattern for periodical triggering, defaults to `0 0 0 * * *`
 * `START_INITIAL_SYNC`: set to 'false' if no initial sync needed
+* `HEAL_MUST_WAIT_FOR_INITIAL_SYNC`: set to 'false' if you don't want this. (Mainly for debugging purposes)
 
 ### API
 There is an api, mainly meant for debugging. Look at `app.js` if you want to use it.

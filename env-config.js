@@ -11,6 +11,7 @@ export const PREFIXES = `
 `;
 
 export const STATUS_BUSY = 'http://redpencil.data.gift/id/concept/JobStatus/busy';
+export const STATUS_SUCCESS = 'http://redpencil.data.gift/id/concept/JobStatus/success';
 export const STATUS_SCHEDULED = 'http://redpencil.data.gift/id/concept/JobStatus/scheduled';
 export const STATUS_FAILED = 'http://redpencil.data.gift/id/concept/JobStatus/failed';
 export const STATUS_CANCELED = 'http://redpencil.data.gift/id/concept/JobStatus/canceled';
@@ -52,3 +53,6 @@ if(!process.env.HEALING_JOB_OPERATION)
 export const HEALING_JOB_OPERATION = process.env.HEALING_JOB_OPERATION;
 
 export const START_INITIAL_SYNC = process.env.START_INITIAL_SYNC == 'false' ? false : true ;
+
+//mainly for debugging purposes
+export const HEAL_MUST_WAIT_FOR_INITIAL_SYNC = process.env.HEAL_MUST_WAIT_FOR_INITIAL_SYNC == 'false' ? false : true ;
