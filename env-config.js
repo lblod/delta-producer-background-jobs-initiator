@@ -40,19 +40,28 @@ export const DUMP_FILE_CREATION_TASK_OPERATION = 'http://redpencil.data.gift/id/
 // delta-healing-job
 export const HEALING_TASK_OPERATION = 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/healing/patchPublicationGraph';
 
-if(!process.env.INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION)
+// Configure initial sync parameters
+export const START_INITIAL_SYNC = process.env.START_INITIAL_SYNC == 'false' ? false : true ;
+
+if(START_INITIAL_SYNC && !process.env.INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION)
   throw `Expected 'INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION' to be provided.`;
 export const INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION = process.env.INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION;
+// End configure initial sync parameters
 
-if(!process.env.DUMP_FILE_CREATION_JOB_OPERATION)
+// Configure dump file creation parameters
+export const ENABLE_DUMP_FILE_CREATION = process.env.ENABLE_DUMP_FILE_CREATION == 'false' ? false : true;
+
+if(ENABLE_DUMP_FILE_CREATION && !process.env.DUMP_FILE_CREATION_JOB_OPERATION)
   throw `Expected 'DUMP_FILE_CREATION_JOB_OPERATION' to be provided.`;
 export const DUMP_FILE_CREATION_JOB_OPERATION = process.env.DUMP_FILE_CREATION_JOB_OPERATION;
+// End configure dump file creation parameters
 
-if(!process.env.HEALING_JOB_OPERATION)
+// Configure healing job parameters
+export const ENABLE_HEALING_JOB_OPERATION = process.env.ENABLE_HEALING_JOB_OPERATION == 'false'? false : true;
+if(ENABLE_HEALING_JOB_OPERATION && !process.env.HEALING_JOB_OPERATION)
   throw `Expected 'HEALING_JOB_OPERATION' to be provided.`;
 export const HEALING_JOB_OPERATION = process.env.HEALING_JOB_OPERATION;
-
-export const START_INITIAL_SYNC = process.env.START_INITIAL_SYNC == 'false' ? false : true ;
+// End configure healing job parameters
 
 //mainly for debugging purposes
 export const HEAL_MUST_WAIT_FOR_INITIAL_SYNC = process.env.HEAL_MUST_WAIT_FOR_INITIAL_SYNC == 'false' ? false : true ;

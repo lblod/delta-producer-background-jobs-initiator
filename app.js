@@ -1,15 +1,18 @@
 import { app, errorHandler } from 'mu';
 import { CronJob } from 'cron';
-import { INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION,
-         INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION,
-         HEALING_JOB_OPERATION,
-         HEALING_TASK_OPERATION,
-         DUMP_FILE_CREATION_JOB_OPERATION,
-         DUMP_FILE_CREATION_TASK_OPERATION,
-         CRON_PATTERN_HEALING_JOB,
-         CRON_PATTERN_DUMP_JOB,
-         START_INITIAL_SYNC
-       } from './env-config.js';
+import {
+  START_INITIAL_SYNC,
+  INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION,
+  INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION,
+  ENABLE_HEALING_JOB_OPERATION,
+  HEALING_JOB_OPERATION,
+  HEALING_TASK_OPERATION,
+  CRON_PATTERN_HEALING_JOB,
+  ENABLE_DUMP_FILE_CREATION,
+  DUMP_FILE_CREATION_JOB_OPERATION,
+  DUMP_FILE_CREATION_TASK_OPERATION,
+  CRON_PATTERN_DUMP_JOB
+  } from './env-config.js';
 import { getJobs, createJob, scheduleTask, cleanupJobs } from './lib/utils';
 import { waitForDatabase } from './lib/database-utils';
 import { run as runDumpPublicationGraphJob } from './jobs/dump-publication-graph';
@@ -25,18 +28,26 @@ if(START_INITIAL_SYNC){
   waitForDatabase(runInitialSyncPublicationGraphJob);
 }
 
-new CronJob(CRON_PATTERN_DUMP_JOB, async function() {
-  const now = new Date().toISOString();
-  console.info(`First check triggered by cron job at ${now}`);
-  await runDumpPublicationGraphJob();
+console.info(`INFO: ENABLE_DUMP_FILE_CREATION set to: ${ENABLE_DUMP_FILE_CREATION}`);
+if(ENABLE_DUMP_FILE_CREATION) {
+  console.info(`INFO: Scheduling dump file creation, with CRON_PATTERN_DUMP_JOB set to: ${CRON_PATTERN_DUMP_JOB}`);
+  new CronJob(CRON_PATTERN_DUMP_JOB, async function() {
+    const now = new Date().toISOString();
+    console.info(`First check triggered by cron job at ${now}`);
+    await runDumpPublicationGraphJob();
 
-}, null, true);
+  }, null, true);
+}
 
-new CronJob(CRON_PATTERN_HEALING_JOB, async function() {
-  const now = new Date().toISOString();
-  console.info(`First check triggered by cron job at ${now}`);
-  await runHealPublicationGraphJob();
-}, null, true);
+console.info(`INFO: ENABLE_HEALING_JOB_OPERATION set to: ${ENABLE_HEALING_JOB_OPERATION}`);
+if(ENABLE_HEALING_JOB_OPERATION) {
+  console.info(`INFO: Scheduling healing, with CRON_PATTERN_HEALING_JOB set to: ${CRON_PATTERN_HEALING_JOB}`);
+  new CronJob(CRON_PATTERN_HEALING_JOB, async function() {
+    const now = new Date().toISOString();
+    console.info(`First check triggered by cron job at ${now}`);
+    await runHealPublicationGraphJob();
+  }, null, true);
+}
 
 /*
  * ENDPOINTS CURRENTLY MEANT FOR DEBUGGING
