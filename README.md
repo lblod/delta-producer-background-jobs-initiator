@@ -28,6 +28,7 @@ The following enviroment variables can be configured:
 * `HEAL_MUST_WAIT_FOR_INITIAL_SYNC`: set to 'false' if you don't want this. (Mainly for debugging purposes)
 * `ENABLE_DUMP_FILE_CREATION`: set to 'false' if you don't want this
 * `ENABLE_HEALING_JOB_OPERATION`: set to 'false' if you don't want this
+* `JOB_TIMEOUT_MINUTES`: set a value greater than 0 if you want to set a timeout to the job (in minutes) 
 
 ### API
 There is an api, mainly meant for debugging. Look at `app.js` if you want to use it.
