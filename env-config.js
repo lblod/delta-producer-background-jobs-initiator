@@ -66,4 +66,4 @@ export const HEALING_JOB_OPERATION = process.env.HEALING_JOB_OPERATION;
 //mainly for debugging purposes
 export const HEAL_MUST_WAIT_FOR_INITIAL_SYNC = process.env.HEAL_MUST_WAIT_FOR_INITIAL_SYNC == 'false' ? false : true ;
 
-export const JOB_TIMEOUT_MINUTES = process.env.HEAL_JOB_TIMEOUT || false; 
+export const JOB_TIMEOUT_MINUTES = process.env.JOB_TIMEOUT_MINUTES || false; 
