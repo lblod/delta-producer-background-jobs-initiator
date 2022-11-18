@@ -15,6 +15,9 @@ export const STATUS_SUCCESS = 'http://redpencil.data.gift/id/concept/JobStatus/s
 export const STATUS_SCHEDULED = 'http://redpencil.data.gift/id/concept/JobStatus/scheduled';
 export const STATUS_FAILED = 'http://redpencil.data.gift/id/concept/JobStatus/failed';
 export const STATUS_CANCELED = 'http://redpencil.data.gift/id/concept/JobStatus/canceled';
+
+export const ACTIVE_STATUSES = [STATUS_BUSY, STATUS_SCHEDULED];
+
 export const ERROR_TYPE= 'http://open-services.net/ns/core#Error';
 export const DELTA_ERROR_TYPE = 'http://redpencil.data.gift/vocabularies/deltas/Error';
 

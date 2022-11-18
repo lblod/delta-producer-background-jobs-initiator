@@ -1,11 +1,12 @@
 import { STATUS_SUCCESS,
          INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION,
          HEALING_JOB_OPERATION,
+         ACTIVE_STATUSES,
          DUMP_FILE_CREATION_JOB_OPERATION,
          HEALING_TASK_OPERATION,
          HEAL_MUST_WAIT_FOR_INITIAL_SYNC
        } from '../env-config.js';
-import { getJobs, storeError, createJob, scheduleTask, getActiveJobs } from '../lib/utils';
+import { getJobs, storeError, createJob, scheduleTask, updateAndFilterTimedOutJobs } from '../lib/utils';
 
 export async function run(){
   console.info(`Starting ${HEALING_JOB_OPERATION} at ${new Date().toISOString()}`);
@@ -16,9 +17,10 @@ export async function run(){
       throw "Healing must wait for initial sync to complete, but initial sync did not complete yet";
     }
     else {
-      let activeJobs = await getActiveJobs(HEALING_JOB_OPERATION);
-      activeJobs = [...activeJobs, ...await getActiveJobs(INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION) ];
-      activeJobs = [...activeJobs, ...await getActiveJobs(DUMP_FILE_CREATION_JOB_OPERATION ) ];
+      let activeJobs = await getJobs(HEALING_JOB_OPERATION, ACTIVE_STATUSES);
+      activeJobs = [...activeJobs, ...await getJobs(INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION, ACTIVE_STATUSES) ];
+      activeJobs = [...activeJobs, ...await getJobs(DUMP_FILE_CREATION_JOB_OPERATION, ACTIVE_STATUSES) ];
+      activeJobs = await updateAndFilterTimedOutJobs(activeJobs);
 
       if(activeJobs.length){
         const message = `Incompatible jobs for
