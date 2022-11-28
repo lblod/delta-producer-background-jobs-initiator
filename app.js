@@ -1,17 +1,8 @@
 import { app, errorHandler } from 'mu';
 import { CronJob } from 'cron';
 import {
-  START_INITIAL_SYNC,
-  INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION,
   INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION,
-  ENABLE_HEALING_JOB_OPERATION,
-  HEALING_JOB_OPERATION,
   HEALING_TASK_OPERATION,
-  CRON_PATTERN_HEALING_JOB,
-  ENABLE_DUMP_FILE_CREATION,
-  DUMP_FILE_CREATION_JOB_OPERATION,
-  DUMP_FILE_CREATION_TASK_OPERATION,
-  CRON_PATTERN_DUMP_JOB
   } from './env-config.js';
 import { getJobs, createJob, scheduleTask, cleanupJobs } from './lib/utils';
 import { waitForDatabase } from './lib/database-utils';
@@ -19,73 +10,144 @@ import { run as runDumpPublicationGraphJob } from './jobs/dump-publication-graph
 import { run as runHealPublicationGraphJob } from './jobs/heal-publication-graph';
 import { run as runInitialSyncPublicationGraphJob } from './jobs/initial-sync-publication-graph';
 
+import config from '/config';
+
 app.get('/', function (_, res) {
   res.send('Hello from delta-producer-background-jobs-initiator :)');
 });
 
-console.info(`INFO: START_INITIAL_SYNC set to: ${START_INITIAL_SYNC}`);
-if(START_INITIAL_SYNC){
-  waitForDatabase(runInitialSyncPublicationGraphJob);
+async function init() {
+  await waitForDatabase();
+  for (const conf of config) {
+    const {
+      name,
+      jobsGraph,
+      dumpFileCreationJobOperation,
+      initialPublicationGraphSyncJobOperation,
+      healingJobOperation,
+      cronPatternDumpJob,
+      cronPatternHealingJob,
+      startInitialSync,
+      disableDumpFileCreation,
+      disableHealingJobOperation,
+      healShouldNotWaitForInitialSync,
+    } = conf;
+    console.log(`setup background job ${name}`);
+
+    console.info(
+      `INFO: disable start initial sync is set to: ${startInitialSync}`
+    );
+    if (startInitialSync) {
+      runInitialSyncPublicationGraphJob(
+        jobsGraph,
+        initialPublicationGraphSyncJobOperation,
+        dumpFileCreationJobOperation,
+        healingJobOperation
+      );
+    }
+
+    console.info(
+      `INFO: disable dump file creation set to: ${!!disableDumpFileCreation}`
+    );
+    if (!disableDumpFileCreation) {
+      console.info(
+        `INFO: Scheduling dump file creation, with cronPatternDumpJob set to: ${cronPatternDumpJob}`
+      );
+      new CronJob(
+        cronPatternDumpJob,
+        async function () {
+          const now = new Date().toISOString();
+          console.info(`First check triggered by cron job at ${now}`);
+          await runDumpPublicationGraphJob(
+            jobsGraph,
+            dumpFileCreationJobOperation,
+            initialPublicationGraphSyncJobOperation,
+            healingJobOperation
+          );
+        },
+        null,
+        true
+      );
+    }
+    console.info(
+      `INFO: disable Healing Job Operation set to: ${!!disableHealingJobOperation}`
+    );
+
+    if (!disableHealingJobOperation) {
+      console.info(
+        `INFO: Scheduling healing, with cronPatternHealingJob set to: ${cronPatternHealingJob}`
+      );
+      new CronJob(
+        cronPatternHealingJob,
+        async function () {
+          const now = new Date().toISOString();
+          console.info(`First check triggered by cron job at ${now}`);
+          await runHealPublicationGraphJob(
+            jobsGraph,
+            healingJobOperation,
+            initialPublicationGraphSyncJobOperation,
+            dumpFileCreationJobOperation,
+            healShouldNotWaitForInitialSync
+          );
+        },
+        null,
+        true
+      );
+    }
+
+    /*
+     * ENDPOINTS CURRENTLY MEANT FOR DEBUGGING
+     */
+    app.post(`/${name}/dump-publication-graph-jobs`, async function (_, res) {
+      const jobUri = await createJob(jobsGraph, dumpFileCreationJobOperation);
+      await scheduleTask(jobsGraph, jobUri, dumpFileCreationJobOperation);
+      res.send({ msg: `Dump publication graph job ${jobUri} triggered` });
+    });
+
+    app.delete(`/${name}/dump-publication-graph-jobs`, async function (_, res) {
+      const jobs = await getJobs(dumpFileCreationJobOperation);
+      await cleanupJobs(jobs);
+      res.send({ msg: "Dump publication graph job cleaned" });
+    });
+
+    app.post(`/${name}/healing-jobs`, async function (_, res) {
+      const jobUri = await createJob(jobsGraph, healingJobOperation);
+      await scheduleTask(jobsGraph, jobUri, HEALING_TASK_OPERATION);
+      res.send({ msg: `Healing job ${jobUri} triggered` });
+    });
+
+    app.delete(`/${name}/healing-jobs`, async function (_, res) {
+      const jobs = await getJobs(jobsGraph, healingJobOperation);
+      await cleanupJobs(jobs);
+      res.send({ msg: "Healing job cleaned" });
+    });
+
+    app.post(`/${name}/initial-sync-jobs`, async function (_, res) {
+      const jobUri = await createJob(
+        jobsGraph,
+        initialPublicationGraphSyncJobOperation
+      );
+      await scheduleTask(
+        jobsGraph,
+        jobUri,
+        INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION
+      );
+      res.send({ msg: `Sync jobs started ${jobUri}` });
+    });
+
+    app.delete(`/${name}/initial-sync-jobs`, async function (_, res) {
+      const jobs = await getJobs(
+        jobsGraph,
+        initialPublicationGraphSyncJobOperation
+      );
+      await cleanupJobs(jobs);
+      res.send({
+        msg: `Sync jobs cleaned ${jobs.map((j) => j.jobUri).join(", ")}`,
+      });
+    });
+  }
 }
 
-console.info(`INFO: ENABLE_DUMP_FILE_CREATION set to: ${ENABLE_DUMP_FILE_CREATION}`);
-if(ENABLE_DUMP_FILE_CREATION) {
-  console.info(`INFO: Scheduling dump file creation, with CRON_PATTERN_DUMP_JOB set to: ${CRON_PATTERN_DUMP_JOB}`);
-  new CronJob(CRON_PATTERN_DUMP_JOB, async function() {
-    const now = new Date().toISOString();
-    console.info(`First check triggered by cron job at ${now}`);
-    await runDumpPublicationGraphJob();
 
-  }, null, true);
-}
+init().then(()=> app.use(errorHandler));
 
-console.info(`INFO: ENABLE_HEALING_JOB_OPERATION set to: ${ENABLE_HEALING_JOB_OPERATION}`);
-if(ENABLE_HEALING_JOB_OPERATION) {
-  console.info(`INFO: Scheduling healing, with CRON_PATTERN_HEALING_JOB set to: ${CRON_PATTERN_HEALING_JOB}`);
-  new CronJob(CRON_PATTERN_HEALING_JOB, async function() {
-    const now = new Date().toISOString();
-    console.info(`First check triggered by cron job at ${now}`);
-    await runHealPublicationGraphJob();
-  }, null, true);
-}
-
-/*
- * ENDPOINTS CURRENTLY MEANT FOR DEBUGGING
- */
-app.post('/dump-publication-graph-jobs', async function (_, res) {
-   const jobUri = await createJob(DUMP_FILE_CREATION_JOB_OPERATION);
-   await scheduleTask(jobUri, DUMP_FILE_CREATION_TASK_OPERATION);
-  res.send({ msg: `Dump publication graph job ${jobUri} triggered` });
-});
-
-app.delete('/dump-publication-graph-jobs', async function (_, res) {
-  const jobs = await getJobs(DUMP_FILE_CREATION_JOB_OPERATION);
-  await cleanupJobs(jobs);
-  res.send({ msg: 'Dump publication graph job cleaned' });
-});
-
-app.post('/healing-jobs', async function (_, res) {
-   const jobUri = await createJob(HEALING_JOB_OPERATION);
-   await scheduleTask(jobUri, HEALING_TASK_OPERATION);
-  res.send({ msg: `Healing job ${jobUri} triggered` });
-});
-
-app.delete('/healing-jobs', async function (_, res) {
-  const jobs = await getJobs(HEALING_JOB_OPERATION);
-  await cleanupJobs(jobs);
-  res.send({ msg: 'Healing job cleaned' });
-});
-
-app.post('/initial-sync-jobs', async function (_, res){
-  const jobUri = await createJob(INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION);
-  await scheduleTask(jobUri, INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION);
-  res.send({ msg: `Sync jobs started ${jobUri}` });
-});
-
-app.delete('/initial-sync-jobs', async function (_, res){
-  const jobs = await getJobs(INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION);
-  await cleanupJobs(jobs);
-  res.send({ msg: `Sync jobs cleaned ${jobs.map(j => j.jobUri).join(', ')}` });
-});
-
-app.use(errorHandler);
