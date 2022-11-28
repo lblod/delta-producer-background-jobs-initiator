@@ -39,6 +39,8 @@ export const DUMP_FILE_CREATION_TASK_OPERATION = 'http://redpencil.data.gift/id/
 export const HEALING_TASK_OPERATION = 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/healing/patchPublicationGraph';
 
 
+export const CONFIG_FILE_JSON = "/config/config.json";
+
 //export const JOBS_GRAPH = process.env.JOBS_GRAPH || 'http://mu.semte.ch/graphs/system/jobs';
 //export const ENABLE_DUMP_FILE_CREATION = process.env.ENABLE_DUMP_FILE_CREATION == 'false' ? false : true;
 

@@ -3,6 +3,7 @@ import { CronJob } from 'cron';
 import {
   INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION,
   HEALING_TASK_OPERATION,
+  CONFIG_FILE_JSON,
   } from './env-config.js';
 import { getJobs, createJob, scheduleTask, cleanupJobs } from './lib/utils';
 import { waitForDatabase } from './lib/database-utils';
@@ -10,7 +11,8 @@ import { run as runDumpPublicationGraphJob } from './jobs/dump-publication-graph
 import { run as runHealPublicationGraphJob } from './jobs/heal-publication-graph';
 import { run as runInitialSyncPublicationGraphJob } from './jobs/initial-sync-publication-graph';
 
-import config from '/config';
+import fs from 'fs';
+
 
 app.get('/', function (_, res) {
   res.send('Hello from delta-producer-background-jobs-initiator :)');
@@ -18,6 +20,10 @@ app.get('/', function (_, res) {
 
 async function init() {
   await waitForDatabase();
+
+  const configFile = fs.readFileSync(CONFIG_FILE_JSON);
+  const config = JSON.parse(configFile);
+
   for (const conf of config) {
     const {
       name,
@@ -35,7 +41,7 @@ async function init() {
     console.log(`setup background job ${name}`);
 
     console.info(
-      `INFO: disable start initial sync is set to: ${startInitialSync}`
+      `INFO: start initial sync is set to: ${startInitialSync}`
     );
     if (startInitialSync) {
       runInitialSyncPublicationGraphJob(
