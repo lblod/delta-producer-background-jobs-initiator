@@ -27,6 +27,7 @@ export const TASK_URI_PREFIX = 'http://redpencil.data.gift/id/task/';
 export const JOBS_GRAPH = process.env.JOBS_GRAPH || 'http://mu.semte.ch/graphs/system/jobs';
 
 export const JOB_CREATOR_URI = 'http://lblod.data.gift/services/delta-producer-background-jobs-initiator';
+export const ERROR_CREATOR_URI = process.env.ERROR_CREATOR_URI || 'http://lblod.data.gift/services/delta-producer-background-jobs-initiator';
 export const ERROR_URI_PREFIX = 'http://redpencil.data.gift/id/jobs/error/';
 export const CRON_PATTERN_HEALING_JOB  = process.env.CRON_PATTERN_HEALING_JOB || '0 0 0 * * *'; // every day at midnight
 export const CRON_PATTERN_DUMP_JOB = process.env.CRON_PATTERN_DUMP_JOB || '0 0 0 * * *'; // every day at midnight
