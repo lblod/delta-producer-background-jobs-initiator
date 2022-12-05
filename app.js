@@ -4,6 +4,7 @@ import {
   INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION,
   HEALING_TASK_OPERATION,
   CONFIG_FILE_JSON,
+  DEFAULT_CRON_PATTERN_JOB
   } from './env-config.js';
 import { getJobs, createJob, scheduleTask, cleanupJobs } from './lib/utils';
 import { waitForDatabase } from './lib/database-utils';
@@ -70,14 +71,13 @@ async function init() {
       if(!dumpFileCreationJobOperation) {
         throw `Expected 'dumpFileCreationJobOperation' to be provided. for job ${name}`;
       }
-      if(!cronPatternDumpJob) {
-        throw `Expected 'cronPatternDumpJob' to be provided. for job ${name}`;
-      }
+   
       console.info(
         `INFO: Scheduling dump file creation for ${name}, with cronPatternDumpJob set to: ${cronPatternDumpJob}`
       );
+
       new CronJob(
-        cronPatternDumpJob,
+        cronPatternDumpJob || DEFAULT_CRON_PATTERN_JOB,
         async function () {
           const now = new Date().toISOString();
           console.info(`First check triggered by cron job for ${name} at ${now}`);
@@ -100,14 +100,12 @@ async function init() {
       if(!healingJobOperation) {
         throw `Expected 'healingJobOperation' to be provided. for job ${name}`;
       }
-      if(!cronPatternHealingJob) {
-        throw `Expected 'cronPatternHealingJob' to be provided. for job ${name}`;
-      }
+      
       console.info(
         `INFO: Scheduling healing for ${name}, with cronPatternHealingJob set to: ${cronPatternHealingJob}`
       );
       new CronJob(
-        cronPatternHealingJob,
+        cronPatternHealingJob || DEFAULT_CRON_PATTERN_JOB,
         async function () {
           const now = new Date().toISOString();
           console.info(`First check triggered by cron job for ${name} at ${now}`);
