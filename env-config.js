@@ -40,23 +40,3 @@ export const HEALING_TASK_OPERATION = 'http://redpencil.data.gift/id/jobs/concep
 
 
 export const CONFIG_FILE_JSON = "/config/config.json";
-
-//export const JOBS_GRAPH = process.env.JOBS_GRAPH || 'http://mu.semte.ch/graphs/system/jobs';
-//export const ENABLE_DUMP_FILE_CREATION = process.env.ENABLE_DUMP_FILE_CREATION == 'false' ? false : true;
-
-// if(ENABLE_DUMP_FILE_CREATION && !process.env.DUMP_FILE_CREATION_JOB_OPERATION)
-//   throw `Expected 'DUMP_FILE_CREATION_JOB_OPERATION' to be provided.`;
-// export const DUMP_FILE_CREATION_JOB_OPERATION = process.env.DUMP_FILE_CREATION_JOB_OPERATION;
-
-// export const START_INITIAL_SYNC = process.env.START_INITIAL_SYNC == 'false' ? false : true ;
-
-// if(START_INITIAL_SYNC && !process.env.INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION)
-//   throw `Expected 'INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION' to be provided.`;
-// export const INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION = process.env.INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION;
-
-// export const ENABLE_HEALING_JOB_OPERATION = process.env.ENABLE_HEALING_JOB_OPERATION == 'false'? false : true;
-// if(ENABLE_HEALING_JOB_OPERATION && !process.env.HEALING_JOB_OPERATION)
-//   throw `Expected 'HEALING_JOB_OPERATION' to be provided.`;
-// export const HEALING_JOB_OPERATION = process.env.HEALING_JOB_OPERATION;
-
-//export const HEAL_MUST_WAIT_FOR_INITIAL_SYNC = process.env.HEAL_MUST_WAIT_FOR_INITIAL_SYNC == 'false' ? false : true ;
