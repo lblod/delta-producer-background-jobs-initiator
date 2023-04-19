@@ -15,7 +15,7 @@ export const STATUS_SUCCESS = 'http://redpencil.data.gift/id/concept/JobStatus/s
 export const STATUS_SCHEDULED = 'http://redpencil.data.gift/id/concept/JobStatus/scheduled';
 export const STATUS_FAILED = 'http://redpencil.data.gift/id/concept/JobStatus/failed';
 export const STATUS_CANCELED = 'http://redpencil.data.gift/id/concept/JobStatus/canceled';
-export const ERROR_TYPE= 'http://open-services.net/ns/core#Error';
+export const ERROR_TYPE = 'http://open-services.net/ns/core#Error';
 export const DELTA_ERROR_TYPE = 'http://redpencil.data.gift/vocabularies/deltas/Error';
 
 export const JOB_TYPE = 'http://vocab.deri.ie/cogs#Job';
@@ -33,13 +33,13 @@ export const CRON_PATTERN_HEALING_JOB  = process.env.CRON_PATTERN_HEALING_JOB ||
 export const CRON_PATTERN_DUMP_JOB = process.env.CRON_PATTERN_DUMP_JOB || '0 0 0 * * *'; // every day at midnight
 
 // delta-initial-publication-graph-sync-job
-export const INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION = 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/initialPublicationGraphSyncing';
+export const INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION = process.env.INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION || 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/initialPublicationGraphSyncing';
 
 // delta-dump-file-creation-job
-export const DUMP_FILE_CREATION_TASK_OPERATION = 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/deltaDumpFileCreation';
+export const DUMP_FILE_CREATION_TASK_OPERATION = process.env.DUMP_FILE_CREATION_TASK_OPERATION || 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/deltaDumpFileCreation';
 
 // delta-healing-job
-export const HEALING_TASK_OPERATION = 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/healing/patchPublicationGraph';
+export const HEALING_TASK_OPERATION = process.env.HEALING_TASK_OPERATION || 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/healing/patchPublicationGraph';
 
 // Configure initial sync parameters
 export const START_INITIAL_SYNC = process.env.START_INITIAL_SYNC == 'false' ? false : true ;
