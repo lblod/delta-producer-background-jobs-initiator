@@ -31,6 +31,7 @@ The following enviroment variables can be configured:
 * `INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION`: The initial sync task operation, defaults to `http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/initialPublicationGraphSyncing`
 * `DUMP_FILE_CREATION_TASK_OPERATION`: The dump file task operation, defaults to `http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/deltaDumpFileCreation`
 * `HEALING_TASK_OPERATION`: The healing task operation, defaults to `http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/patchPublicationGraph`
+* `JOB_TIMEOUT_MINUTES`: set a value greater than 0 if you want to set a timeout to the job (in minutes) 
 
 ### API
 There is an api, mainly meant for debugging. Look at `app.js` if you want to use it.
