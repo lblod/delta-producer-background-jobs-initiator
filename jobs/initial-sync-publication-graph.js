@@ -12,7 +12,11 @@ import { getJobs, storeError, createJob, scheduleTask, updateAndFilterTimedOutJo
 export async function run() {
   console.info(`Starting ${INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION} at ${new Date().toISOString()}`);
   try {
-    let activeJobs = await getJobs(INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION, ACTIVE_STATUSES);
+    let activeJobs = await getJobs(INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION);
+    if (activeJobs.length) {
+      console.log(`Initial sync already ran. continue...`);
+      return;
+    }
     if (ENABLE_DUMP_FILE_CREATION) {
       activeJobs = [...activeJobs, ...await getJobs(DUMP_FILE_CREATION_JOB_OPERATION, ACTIVE_STATUSES)];
     }
