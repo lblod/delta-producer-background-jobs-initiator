@@ -6,7 +6,7 @@ import { getJobs, storeError, createJob, scheduleTask, updateAndFilterTimedOutJo
 
 export async function run(jobsGraph, initialPublicationGraphSyncJobOperation,
   dumpFileCreationJobOperation, healingJobOperation,
-  disableDumpFileCreation, disableHealingJobOperation) {
+  disableDumpFileCreation, disableHealingJobOperation, errorCreatorUri) {
   console.info(`Starting ${initialPublicationGraphSyncJobOperation} at ${new Date().toISOString()}`);
   try {
     let activeJobs = await getJobs(initialPublicationGraphSyncJobOperation);
@@ -37,6 +37,6 @@ export async function run(jobsGraph, initialPublicationGraphSyncJobOperation,
   catch (error) {
     console.error(`Error while scheduling job ${initialPublicationGraphSyncJobOperation}: ${error}`);
     console.error(error);
-    await storeError(jobsGraph, error);
+    await storeError(jobsGraph, errorCreatorUri, error);
   }
 }

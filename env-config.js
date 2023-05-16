@@ -27,7 +27,6 @@ export const TASK_URI_PREFIX = 'http://redpencil.data.gift/id/task/';
 
 
 export const JOB_CREATOR_URI = 'http://lblod.data.gift/services/delta-producer-background-jobs-initiator';
-export const ERROR_CREATOR_URI = process.env.ERROR_CREATOR_URI || 'http://lblod.data.gift/services/delta-producer-background-jobs-initiator';
 export const ERROR_URI_PREFIX = 'http://redpencil.data.gift/id/jobs/error/';
 export const DEFAULT_CRON_PATTERN_JOB = '0 0 0 * * *'; // every day at midnight
 // delta-initial-publication-graph-sync-job

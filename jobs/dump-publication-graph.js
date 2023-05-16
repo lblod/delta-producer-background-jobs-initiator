@@ -4,7 +4,7 @@ import {
 } from '../env-config.js';
 import { getJobs, storeError, createJob, scheduleTask, updateAndFilterTimedOutJobs } from '../lib/utils';
 
-export async function run(jobsGraph, dumpFileCreationJobOperation, initialPublicationGraphSyncJobOperation, healingJobOperation) {
+export async function run(jobsGraph, dumpFileCreationJobOperation, initialPublicationGraphSyncJobOperation, healingJobOperation, errorCreatorUri) {
   console.info(`Starting ${dumpFileCreationJobOperation} at ${new Date().toISOString()}`);
   try {
     let activeJobs = await getJobs(dumpFileCreationJobOperation, ACTIVE_STATUSES);
@@ -25,7 +25,6 @@ export async function run(jobsGraph, dumpFileCreationJobOperation, initialPublic
 
   } catch (error) {
     console.error(`Error while scheduling job ${dumpFileCreationJobOperation}: ${error}`);
-    console.error(jobsGraph, error);
-    await storeError(error);
+    await storeError(jobsGraph, errorCreatorUri, error);
   }
 }

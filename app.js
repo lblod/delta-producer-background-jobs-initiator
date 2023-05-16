@@ -26,7 +26,7 @@ async function init() {
   const config = JSON.parse(configFile);
 
   for (const conf of config) {
-    const {
+    let {
       name,
       jobsGraph,
       dumpFileCreationJobOperation,
@@ -38,6 +38,7 @@ async function init() {
       disableDumpFileCreation,
       disableHealingJobOperation,
       healShouldNotWaitForInitialSync,
+      errorCreatorUri
     } = conf;
 
     if (!name) {
@@ -45,6 +46,10 @@ async function init() {
     }
     if (!jobsGraph) {
       throw `missing mandatory jobsGraph in config ${name}`;
+    }
+
+    if (!errorCreatorUri) {
+      errorCreatorUri = "http://lblod.data.gift/services/delta-producer-background-jobs-initiator";
     }
 
     console.log(`setup background job ${name}`);
@@ -61,7 +66,7 @@ async function init() {
         initialPublicationGraphSyncJobOperation,
         dumpFileCreationJobOperation,
         healingJobOperation,
-        disableDumpFileCreation, disableHealingJobOperation
+        disableDumpFileCreation, disableHealingJobOperation, errorCreatorUri
       );
     }
 
@@ -86,7 +91,8 @@ async function init() {
             jobsGraph,
             dumpFileCreationJobOperation,
             initialPublicationGraphSyncJobOperation,
-            healingJobOperation
+            healingJobOperation,
+            errorCreatorUri
           );
         },
         null,
@@ -115,7 +121,8 @@ async function init() {
             healingJobOperation,
             initialPublicationGraphSyncJobOperation,
             dumpFileCreationJobOperation,
-            healShouldNotWaitForInitialSync
+            healShouldNotWaitForInitialSync,
+            errorCreatorUri
           );
         },
         null,
