@@ -29,7 +29,7 @@ export async function run(jobsGraph, initialPublicationGraphSyncJobOperation,
       throw message;
     }
     else {
-      const jobUri = await createJob(initialPublicationGraphSyncJobOperation);
+      const jobUri = await createJob(jobsGraph, initialPublicationGraphSyncJobOperation);
       await scheduleTask(jobsGraph, jobUri, INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION);
     }
 
