@@ -25,6 +25,7 @@ export async function run(jobsGraph, dumpFileCreationJobOperation, initialPublic
 
   } catch (error) {
     console.error(`Error while scheduling job ${dumpFileCreationJobOperation}: ${error}`);
+    console.error(error);
     await storeError(jobsGraph, errorCreatorUri, error);
   }
 }
