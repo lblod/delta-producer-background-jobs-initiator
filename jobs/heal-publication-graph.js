@@ -5,7 +5,8 @@ import { STATUS_BUSY,
          HEALING_JOB_OPERATION,
          DUMP_FILE_CREATION_JOB_OPERATION,
          HEALING_TASK_OPERATION,
-         HEAL_MUST_WAIT_FOR_INITIAL_SYNC
+         HEAL_MUST_WAIT_FOR_INITIAL_SYNC,
+         ENABLE_DUMP_FILE_CREATION
        } from '../env-config.js';
 import { getJobs, storeError, createJob, scheduleTask } from '../lib/utils';
 
@@ -20,7 +21,10 @@ export async function run(){
     else {
       let activeJobs = await getJobs(HEALING_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ]);
       activeJobs = [...activeJobs, ...await getJobs(INITIAL_PUBLICATION_GRAPH_SYNC_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] ) ];
-      activeJobs = [...activeJobs, ...await getJobs(DUMP_FILE_CREATION_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] ) ];
+
+      if (ENABLE_DUMP_FILE_CREATION) {
+        activeJobs = [...activeJobs, ...await getJobs(DUMP_FILE_CREATION_JOB_OPERATION, [ STATUS_BUSY, STATUS_SCHEDULED ] ) ];
+      }
 
       if(activeJobs.length){
         const message = `Incompatible jobs for
