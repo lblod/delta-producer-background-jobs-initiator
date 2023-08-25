@@ -7,13 +7,12 @@ import {
   CONFIG_FILE_JSON,
   DEFAULT_CRON_PATTERN_JOB
 } from './env-config.js';
-import { getJobs, createJob, scheduleTask, cleanupJobs } from './lib/utils';
+import { getJobs, cleanupJobs } from './lib/utils';
 import { waitForDatabase } from './lib/database-utils';
 import { run as runDumpPublicationGraphJob } from './jobs/dump-publication-graph';
 import { run as runHealPublicationGraphJob } from './jobs/heal-publication-graph';
 import { run as runInitialSyncPublicationGraphJob } from './jobs/initial-sync-publication-graph';
 import fs from 'fs';
-
 
 app.get('/', function(_, res) {
   res.send('Hello from delta-producer-background-jobs-initiator :)');
