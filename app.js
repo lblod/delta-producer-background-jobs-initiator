@@ -19,7 +19,6 @@ app.get('/', function(_, res) {
   res.send('Hello from delta-producer-background-jobs-initiator :)');
 });
 
-
 async function init() {
   await waitForDatabase();
 
@@ -27,6 +26,8 @@ async function init() {
   const config = JSON.parse(configFile);
 
   for (const conf of config) {
+    ensureDefaultsConfig(config);
+    validateConfig(config);
     let {
       name,
       jobsGraph,
@@ -42,26 +43,13 @@ async function init() {
       errorCreatorUri
     } = conf;
 
-    if (!name) {
-      throw "missing mandatory name in config";
-    }
-    if (!jobsGraph) {
-      throw `missing mandatory jobsGraph in config ${name}`;
-    }
-
-    if (!errorCreatorUri) {
-      errorCreatorUri = "http://lblod.data.gift/services/delta-producer-background-jobs-initiator";
-    }
-
     console.log(`setup background job ${name}`);
 
     console.info(
       `INFO: start initial sync for ${name} is set to: ${startInitialSync}`
     );
+
     if (startInitialSync) {
-      if (!initialPublicationGraphSyncJobOperation) {
-        throw `missing mandatory initialPublicationGraphSyncJobOperation in config ${name}`;
-      }
       runInitialSyncPublicationGraphJob(
         jobsGraph,
         initialPublicationGraphSyncJobOperation,
@@ -74,15 +62,11 @@ async function init() {
     console.info(
       `INFO: disable dump file creation for ${name} set to: ${!!disableDumpFileCreation}`
     );
-    if (!disableDumpFileCreation) {
-      if (!dumpFileCreationJobOperation) {
-        throw `Expected 'dumpFileCreationJobOperation' to be provided. for job ${name}`;
-      }
 
+    if (!disableDumpFileCreation) {
       console.info(
         `INFO: Scheduling dump file creation for ${name}, with cronPatternDumpJob set to: ${cronPatternDumpJob}`
       );
-
       new CronJob(
         cronPatternDumpJob || DEFAULT_CRON_PATTERN_JOB,
         async function() {
@@ -105,10 +89,6 @@ async function init() {
     );
 
     if (!disableHealingJobOperation) {
-      if (!healingJobOperation) {
-        throw `Expected 'healingJobOperation' to be provided. for job ${name}`;
-      }
-
       console.info(
         `INFO: Scheduling healing for ${name}, with cronPatternHealingJob set to: ${cronPatternHealingJob}`
       );
@@ -190,3 +170,38 @@ async function init() {
 
 init().then(() => app.use(errorHandler));
 
+function validateConfig(config) {
+    const requiredKeys = [
+        "name",
+        "jobsGraph",
+        "dumpFileCreationJobOperation",
+        "initialPublicationGraphSyncJobOperation",
+        "healingJobOperation",
+        "cronPatternDumpJob",
+        "cronPatternHealingJob",
+        "startInitialSync",
+        "disableDumpFileCreation",
+        "disableHealingJobOperation",
+        "healShouldNotWaitForInitialSync",
+        "errorCreatorUri"
+    ];
+
+    requiredKeys.forEach(key => {
+        if (config[key] === undefined) {
+            throw `missing mandatory ${key} in config${config.name ? ' ' + config.name : ''}`;
+        }
+    });
+}
+
+function ensureDefaultsConfig(config) {
+  config.disableDumpFileCreation = config.disableDumpFileCreation || false;
+  config.disableHealingJobOperation = config.disableHealingJobOperation || false;
+  config.healShouldNotWaitForInitialSync = config.healShouldNotWaitForInitialSync || false;
+  if(!config.errorCreatorUri){
+    config.errorCreatorUri = 'http://lblod.data.gift/services/delta-producer-background-jobs-initiator';
+    if(config.name) {
+      config.errorCreatorUri = config.errorCreatorUri + '/' + config.name;
+    }
+  }
+  return config;
+}
