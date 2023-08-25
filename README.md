@@ -39,7 +39,7 @@ The JSON file contains an array of job configurations. The properties are:
 ```json
 [
     {
-        "name": "delta-producer-background-jobs-initiator-leidinggevenden",
+        "name": "leidinggevenden",
         "jobsGraph": "http://mu.semte.ch/graphs/organizations/141d9d6b-54af-4d17-b313-8d1c30bc3f5b/LoketAdmin",
         "dumpFileCreationJobOperation": "http://redpencil.data.gift/id/jobs/concept/JobOperation/deltas/deltaDumpFileCreation/leidinggevenden",
         "initialPublicationGraphSyncJobOperation": "http://redpencil.data.gift/id/jobs/concept/JobOperation/deltas/initialPublicationGraphSyncing/leidinggevenden",
