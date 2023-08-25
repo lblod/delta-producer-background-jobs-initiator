@@ -31,7 +31,7 @@ The JSON file contains an array of job configurations. The properties are:
 * `startInitialSync`: (Required) Determines whether the initial sync is enabled.
 * `initialPublicationGraphSyncJobOperation`: (Required) URI related to the initial publication sync.
 * `disableHealingJobOperation`: Indicates if the healing job is disabled. Default: `false`.
-* `healingJobOperation`: URI related to dump files production.
+* `healingJobOperation`: (Required) URI related to dump files production.
 * `cronPatternDumpJob`: Specifies the pattern for periodic triggering. Default: `0 0 0 * * *`.
 * `cronPatternHealingJob`: Pattern for periodic triggering. Default: `0 0 0 * * *`.
 * `errorCreatorUri`: URI identifying the error creator. While this is optional, a sensible default will be used if not provided.
