@@ -3,6 +3,7 @@ import { CronJob } from 'cron';
 import {
   INITIAL_PUBLICATION_GRAPH_SYNC_TASK_OPERATION,
   HEALING_TASK_OPERATION,
+  DUMP_FILE_CREATION_TASK_OPERATION,
   CONFIG_FILE_JSON,
   DEFAULT_CRON_PATTERN_JOB
 } from './env-config.js';
@@ -136,7 +137,7 @@ async function init() {
     if (dumpFileCreationJobOperation) {
       app.post(`/${name}/dump-publication-graph-jobs`, async function(_, res) {
         const jobUri = await createJob(jobsGraph, dumpFileCreationJobOperation);
-        await scheduleTask(jobsGraph, jobUri, dumpFileCreationJobOperation);
+        await scheduleTask(jobsGraph, jobUri, DUMP_FILE_CREATION_TASK_OPERATION);
         res.send({ msg: `Dump publication graph job ${jobUri} triggered` });
       });
       app.delete(`/${name}/dump-publication-graph-jobs`, async function(_, res) {
