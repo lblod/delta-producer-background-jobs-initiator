@@ -4,9 +4,15 @@ import {
 } from '../env-config.js';
 import { getJobs, storeError, createJob, scheduleTask, updateAndFilterTimedOutJobs } from '../lib/utils';
 
-export async function run(jobsGraph, initialPublicationGraphSyncJobOperation,
-  dumpFileCreationJobOperation, healingJobOperation,
-  disableDumpFileCreation, disableHealingJobOperation, errorCreatorUri) {
+export async function run(
+  { jobsGraph,
+    initialPublicationGraphSyncJobOperation,
+    dumpFileCreationJobOperation,
+    healingJobOperation,
+    disableDumpFileCreation,
+    disableHealingJobOperation,
+    errorCreatorUri
+  }, debug = false ) {
   console.info(`Starting ${initialPublicationGraphSyncJobOperation} at ${new Date().toISOString()}`);
   try {
     let activeJobs = await getJobs(initialPublicationGraphSyncJobOperation);
@@ -22,7 +28,7 @@ export async function run(jobsGraph, initialPublicationGraphSyncJobOperation,
     }
     activeJobs = await updateAndFilterTimedOutJobs(activeJobs);
 
-    if (activeJobs.length) {
+    if (activeJobs.length && !debug) {
       const message = `Incompatible jobs for
                        ${initialPublicationGraphSyncJobOperation}
                        already running, see ${activeJobs.map(j => j.jobUri).join(', ')}`;
