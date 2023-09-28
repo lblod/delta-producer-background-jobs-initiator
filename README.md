@@ -96,19 +96,6 @@ The following snippet can be added to your docker-compose.override.yml file.
     environment:
       NODE_ENV: "development"
       START_INITIAL_SYNC: "true"
-=======
-# delta-producer-background-jobs-initiator
-This service is responsible for periodically triggering delta-related background jobs. For a comprehensive overview of how deltas function, please refer to the [delta-tutorial](https://github.com/lblod/delta-tutorial).
-## How
-### Add the service to a stack
-
-To include the service in your `docker-compose.yml`, the minimum configuration is as follows:
-
-```yaml
-  delta-producer-background-jobs-initiator-some-theme:
-    image: lblod/delta-producer-background-jobs-initiator:1.0.0
-    volumes:
-      - ./config/delta-producer/background-job-initiator/config.json:/config/config.json
 ```
 As mentionned in [🐸 Gotcha's](#-🐸-gotcha's), we set `START_INITIAL_SYNC` in the override for extra safety.
 
