@@ -26,7 +26,7 @@ export async function run(
     if (!disableHealingJobOperation) {
       activeJobs = [...activeJobs, ...await getJobs(healingJobOperation, ACTIVE_STATUSES)];
     }
-    activeJobs = await updateAndFilterTimedOutJobs(activeJobs);
+    activeJobs = await updateAndFilterTimedOutJobs(jobsGraph, activeJobs);
 
     if (activeJobs.length && !debug) {
       const message = `Incompatible jobs for

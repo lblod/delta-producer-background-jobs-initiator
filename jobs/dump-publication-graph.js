@@ -18,7 +18,7 @@ export async function run(
     let activeJobs = await getJobs(dumpFileCreationJobOperation, ACTIVE_STATUSES);
     activeJobs = [...activeJobs, ...await getJobs(initialPublicationGraphSyncJobOperation, ACTIVE_STATUSES)];
     activeJobs = [...activeJobs, ...await getJobs(healingJobOperation, ACTIVE_STATUSES)];
-    activeJobs = await updateAndFilterTimedOutJobs(activeJobs);
+    activeJobs = await updateAndFilterTimedOutJobs(jobsGraph, activeJobs);
 
     if (activeJobs.length && !debug) {
       const message = `Incompatible jobs for
