@@ -39,5 +39,6 @@ export const DUMP_FILE_CREATION_TASK_OPERATION = process.env.DUMP_FILE_CREATION_
 export const HEALING_TASK_OPERATION = process.env.HEALING_TASK_OPERATION || 'http://redpencil.data.gift/id/jobs/concept/TaskOperation/deltas/healing/patchPublicationGraph';
 
 export const CONFIG_FILE_JSON = "/config/config.json";
+export const CONFIG_OVERRIDE_FILE_JSON = "/config/config.override.json";
 
 export const JOB_TIMEOUT_MINUTES = process.env.JOB_TIMEOUT_MINUTES || false;
