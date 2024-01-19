@@ -25,33 +25,21 @@ async function init() {
   const configFile = fs.readFileSync(CONFIG_FILE_JSON);
   const config = JSON.parse(configFile);
 
-  // A valid, but empty JSON override config file will be present.
-  // As such, there is neither a need to check for the file's existence
-  // nor to verify whether it is a completely empty (and thus an invalid)
-  // JSON file.
-  let configOverrideFile = fs.readFileSync(CONFIG_OVERRIDE_FILE_JSON);
-  let configOverride = JSON.parse(configOverrideFile);
+  let configOverride = {};
+  if (fs.existsSync(CONFIG_OVERRIDE_FILE_JSON)) {
+    let configOverrideFile = fs.readFileSync(CONFIG_OVERRIDE_FILE_JSON);
+    configOverride = JSON.parse(configOverrideFile);
+  }
 
   for (let conf of config) {
-    // The JSON override config file has the following structure:
-    // {
-    //   "submissions": {
-    //     "startInitialSync": true
-    //   },
-    //   "worship-submissions": {
-    //     "startInitialSync": true
-    //   }
-    // }
-    //
     // The override values are fetched as follows:
     //  - Fetch current configuration name
     //  - Check whether this configuration has any overrides
     //  - If yes, loop over the keys and update the values in the configuration
     let serviceName = conf["name"];
-    if (serviceName != undefined) {
-      for (let key in configOverride[serviceName]) {
-        conf[key] = configOverride[serviceName][key];
-      }
+    let confOverrideEntry = configOverride[serviceName] || {};
+    for (let key in confOverrideEntry) {
+      conf[key] = confOverrideEntry[key];
     }
 
     ensureDefaultsConfig(conf);
